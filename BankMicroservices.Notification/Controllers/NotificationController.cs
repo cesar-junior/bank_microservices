@@ -35,8 +35,8 @@ namespace BankMicroservices.Notification.Controllers
         [Authorize(Roles = Role.Admin)]
         public async Task<ActionResult<IEnumerable<NotificationVO>>> FindAll()
         {
-            var products = await _repository.FindAll();
-            return Ok(products);
+            var notifications = await _repository.FindAll();
+            return Ok(notifications);
         }
     }
 }

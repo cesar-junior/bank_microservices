@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankMicroservices.MessageBu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankMicroservices.Notification", "BankMicroservices.Notification\BankMicroservices.Notification.csproj", "{61EAFEF1-3E3B-42CB-A1E9-8BF9C14FC1EA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankMicroservices.Log", "BankMicroservices.Log\BankMicroservices.Log.csproj", "{91A42EA9-7158-4104-965A-032A4CB99179}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,10 @@ Global
 		{61EAFEF1-3E3B-42CB-A1E9-8BF9C14FC1EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{61EAFEF1-3E3B-42CB-A1E9-8BF9C14FC1EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{61EAFEF1-3E3B-42CB-A1E9-8BF9C14FC1EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91A42EA9-7158-4104-965A-032A4CB99179}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91A42EA9-7158-4104-965A-032A4CB99179}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91A42EA9-7158-4104-965A-032A4CB99179}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91A42EA9-7158-4104-965A-032A4CB99179}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -50,5 +56,6 @@ Global
 		{9EA3E734-7C03-43FD-9679-9726D490654E} = {F5A7E790-5E72-456E-A6CC-F55A63288932}
 		{E8474608-A328-49E3-9BC5-90FC055F3F78} = {32D7AE1E-6B3A-4E22-A1B0-C037575B7CBE}
 		{61EAFEF1-3E3B-42CB-A1E9-8BF9C14FC1EA} = {F5A7E790-5E72-456E-A6CC-F55A63288932}
+		{91A42EA9-7158-4104-965A-032A4CB99179} = {F5A7E790-5E72-456E-A6CC-F55A63288932}
 	EndGlobalSection
 EndGlobal

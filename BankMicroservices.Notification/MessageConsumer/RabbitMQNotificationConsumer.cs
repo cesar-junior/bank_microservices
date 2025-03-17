@@ -45,14 +45,14 @@ namespace BankMicroservices.Notification.MessageConsumer
             {
                 var content = Encoding.UTF8.GetString(evt.Body.ToArray());
                 NotificationMessage message = JsonSerializer.Deserialize<NotificationMessage>(content);
-                ProcessLogs(message).GetAwaiter().GetResult();
+                ProcessNotification(message).GetAwaiter().GetResult();
                 _channel.BasicAck(evt.DeliveryTag, false);
             };
             _channel.BasicConsume(NotificationQueueName, false, consumer);
             return Task.CompletedTask;
         }
 
-        private async Task ProcessLogs(NotificationMessage message)
+        private async Task ProcessNotification(NotificationMessage message)
         {         
             try
             {
