@@ -6,6 +6,8 @@ using BankMicroservices.Client.Repository.Caching;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using System.IO;
+using BankMicroservices.Client.Messages;
+using BankMicroservices.Client.RabbitMQSender;
 
 namespace BankMicroservices.Client.Repository
 {
@@ -14,8 +16,10 @@ namespace BankMicroservices.Client.Repository
         private readonly MySQLContext _context;
         private readonly ICachingService _caching;
         private IMapper _mapper;
+        private IRabbitMQMessageSender _rabbitMQMessageSender;
+        private IRabbitMQMessageSender _rabbitMQLogSender;
 
-        public UserRepository(DbContextOptions<MySQLContext> context, IMapper mapper, ICachingService caching)
+        public UserRepository(DbContextOptions<MySQLContext> context, IMapper mapper, ICachingService caching, IRabbitMQMessageSender rabbitMQMessageSender, IRabbitMQMessageSender rabbitMQLogSender)
         {
             _context = new MySQLContext(context);
             _caching = caching;
@@ -32,7 +36,7 @@ namespace BankMicroservices.Client.Repository
 
         public async Task<UserVO> GetByUserId(string userId)
         {
-            string userCache = _caching.GetAsync(userId);
+            string? userCache = _caching.GetAsync(userId);
 
             if (!string.IsNullOrWhiteSpace(userCache))
             {
@@ -83,18 +87,50 @@ namespace BankMicroservices.Client.Repository
             return false;
         }
 
-        public async Task<UserVO> ModifyBalance(string userId, float quantity)
+        public async Task<UserVO> TransferBalance(string senderUserId, string receiverUserId, float quantity)
         {
-            var u = await _context.Users.Where(u => u.UserId == userId).FirstOrDefaultAsync();
-            if (u != null)
+            var senderUser = await _context.Users.Where(u => u.UserId == senderUserId).FirstOrDefaultAsync();
+            if (senderUser == null)
             {
-                throw new Exception("User not found");
+                throw new Exception("Sender user not found");
             }
 
-            u.Balance += quantity;
-            _context.Users.Update(u);
-            await _context.SaveChangesAsync();
-            return _mapper.Map<UserVO>(u);
+            if (quantity <= u.Balance) {
+
+                var receiverUser = await _context.Users.Where(u => u.UserId == receiverUserId).FirstOrDefaultAsync();
+                if (receiverUser == null)
+                {
+                    throw new Exception("Receiver user not found");
+                }
+
+                var notificationMessage = new NotificationMessage
+                {
+                    UserId = receiverUser.UserId,
+                    Email = receiverUser.Email,
+                    Title = "You received a transfer.",
+                    Message = $"Transfer amount {quantity}"
+                };
+                _rabbitMQMessageSender.SendMessage(notificationMessage);
+
+                senderUser.Balance -= quantity;
+                receiverUser.Balance += quantity;
+                _context.Users.Update(senderUser);
+                _context.Users.Update(receiverUser);
+                await _context.SaveChangesAsync();
+                return _mapper.Map<UserVO>(senderUser);
+            } else
+            {
+
+                var logMessage = new LogMessage
+                {
+                    Type = "Warning",
+                    Message = $"User {senderUser.Id} does not have sufficient balance to return this transfer. Transfer Amount {quantity}"
+                };
+
+                _rabbitMQLogSender.SendMessage(logMessage);
+                throw new Exception($"User {senderUser.Id} does not have sufficient balance to return this transfer. Transfer Amount {quantity}");
+            }
+
         }
     }
 }

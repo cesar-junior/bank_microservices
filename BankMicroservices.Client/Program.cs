@@ -1,6 +1,7 @@
 using AutoMapper;
 using BankMicroservices.Client.Config;
 using BankMicroservices.Client.Model.Context;
+using BankMicroservices.Client.RabbitMQSender;
 using BankMicroservices.Client.Repository;
 using BankMicroservices.Client.Repository.Caching;
 using BankMicroservices.Client.Repository.Caching.RedisToDoList.API.Infrastructure.Caching;
@@ -34,6 +35,8 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserProfilePictureRepository, UserProfilePictureRepository>();
 builder.Services.AddScoped<ICachingService, CachingService>();
+builder.Services.AddSingleton<IRabbitMQMessageSender, RabbitMQNotificationSender>();
+builder.Services.AddSingleton<IRabbitMQMessageSender, RabbitMQLogSender>();
 
 builder.Services.AddStackExchangeRedisCache(o =>
 {

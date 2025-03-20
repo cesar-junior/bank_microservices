@@ -3,6 +3,6 @@
     public interface ICachingService
     {
         void SetAsync(string key, string value);
-        string GetAsync(string key);
+        string? GetAsync(string key);
     }
 }
