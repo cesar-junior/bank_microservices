@@ -95,7 +95,7 @@ namespace BankMicroservices.Client.Repository
                 throw new Exception("Sender user not found");
             }
 
-            if (quantity <= u.Balance) {
+            if (quantity <= senderUser.Balance) {
 
                 var receiverUser = await _context.Users.Where(u => u.UserId == receiverUserId).FirstOrDefaultAsync();
                 if (receiverUser == null)
