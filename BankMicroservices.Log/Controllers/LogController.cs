@@ -20,9 +20,12 @@ namespace BankMicroservices.Log.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = Role.Admin)]
+        [Authorize]
         public async Task<ActionResult<PagedResponse<List<LogVO>>>> GetWithOffsetPagination(int pageNumber, int pageSize)
         {
+            var userIsAdmin = User.Claims.Where(u => u.Type == "role" && u.Value == Role.Admin)?.FirstOrDefault() != null;
+            if (!userIsAdmin) return Forbid();
+
             pageNumber = pageNumber >= 0 ? pageNumber : 0;
             pageSize = pageSize > 0 ? pageSize : 1;
 

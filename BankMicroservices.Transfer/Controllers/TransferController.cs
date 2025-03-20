@@ -24,9 +24,11 @@ namespace BankMicroservices.Transfer.Controllers
         public async Task<ActionResult<TransferVO>> GetTransferById(long id)
         {
             var userClaimId = User.Claims.Where(u => u.Type == "sub")?.FirstOrDefault()?.Value;
+            var userIsAdmin = User.Claims.Where(u => u.Type == "role" && u.Value == Role.Admin)?.FirstOrDefault() != null;
+            
             var vo = await _repository.GetTransferById(id);
             if (vo == null) return NotFound();
-            if (User.IsInRole(Role.Admin) || userClaimId == vo.SenderUserId|| userClaimId == vo.ReceiverUserId)
+            if (userIsAdmin || userClaimId == vo.SenderUserId|| userClaimId == vo.ReceiverUserId)
             {
                 return Ok(vo);
             }
@@ -35,12 +37,13 @@ namespace BankMicroservices.Transfer.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = Role.Admin)]
+        [Authorize]
         public async Task<ActionResult<List<TransferVO>>> GetTransfersByUser(string userId = "")
         {
             var userClaimId = User.Claims.Where(u => u.Type == "sub")?.FirstOrDefault()?.Value;
-            if(userId.IsNullOrEmpty()) userId = userClaimId ?? throw new ArgumentNullException();
-            if (User.IsInRole(Role.Admin) || userClaimId == userId)
+            var userIsAdmin = User.Claims.Where(u => u.Type == "role" && u.Value == Role.Admin)?.FirstOrDefault() != null;
+            if (userId.IsNullOrEmpty()) userId = userClaimId ?? throw new ArgumentNullException();
+            if (userIsAdmin || userClaimId == userId)
             {
                 List<TransferVO> transferVOs = await _repository.GetTransfersByUser(userId);
                 return Ok(transferVOs);

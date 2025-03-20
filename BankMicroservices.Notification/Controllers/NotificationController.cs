@@ -32,9 +32,12 @@ namespace BankMicroservices.Notification.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = Role.Admin)]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<NotificationVO>>> FindAll()
         {
+            var userIsAdmin = User.Claims.Where(u => u.Type == "role" && u.Value == Role.Admin)?.FirstOrDefault() != null;
+            if (!userIsAdmin) return Forbid();
+
             var notifications = await _repository.FindAll();
             return Ok(notifications);
         }

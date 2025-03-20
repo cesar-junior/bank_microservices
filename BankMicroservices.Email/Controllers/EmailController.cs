@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BankMicroservices.Email.Controllers
@@ -22,9 +23,11 @@ namespace BankMicroservices.Email.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = Role.Admin)]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<EmailVO>>> FindAll()
         {
+            var userIsAdmin = User.Claims.Where(u => u.Type == "role" && u.Value == Role.Admin)?.FirstOrDefault() != null;
+            if (!userIsAdmin) return Forbid();
             var products = await _repository.FindAll();
             return Ok(products);
         }

@@ -24,7 +24,9 @@ namespace BankMicroservices.Client.Controllers
         public async Task<ActionResult<UserProfilePictureVO>> GetByUserId(string userId)
         {
             var userClaimId = User.Claims.Where(u => u.Type == "sub")?.FirstOrDefault()?.Value;
-            if (User.IsInRole(Role.Admin) || userId == userClaimId)
+            var userIsAdmin = User.Claims.Where(u => u.Type == "role" && u.Value == Role.Admin)?.FirstOrDefault() != null;
+
+            if (userIsAdmin || userId == userClaimId)
             {
                 var vo = await _repository.GetByUserId(userId);
                 if (vo == null) return NotFound();
@@ -47,9 +49,11 @@ namespace BankMicroservices.Client.Controllers
         public async Task<ActionResult<UserProfilePictureVO>> Update([FromBody] UserProfilePictureVO vo)
         {
             var userId = User.Claims.Where(u => u.Type == "sub")?.FirstOrDefault()?.Value;
+            var userIsAdmin = User.Claims.Where(u => u.Type == "role" && u.Value == Role.Admin)?.FirstOrDefault() != null;
+
             if (vo.UserId.IsNullOrEmpty())
                 vo.UserId = userId ?? "";
-            if (vo == null || !User.IsInRole(Role.Admin) && vo.UserId != userId) return BadRequest();
+            if (vo == null || !userIsAdmin && vo.UserId != userId) return BadRequest();
             try
             {
                 var user = await _repository.Update(vo);
