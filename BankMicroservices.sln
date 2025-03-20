@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankMicroservices.Client", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankMicroservices.Transfer", "BankMicroservices.Transfer\BankMicroservices.Transfer.csproj", "{46FE38EE-A0E5-421C-A5DF-9545C665CA05}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankMicroservices.APIGateway", "BankMicroservices.APIGateway\BankMicroservices.APIGateway.csproj", "{320C0541-7D4E-4386-814E-7584764A189F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +61,10 @@ Global
 		{46FE38EE-A0E5-421C-A5DF-9545C665CA05}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{46FE38EE-A0E5-421C-A5DF-9545C665CA05}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{46FE38EE-A0E5-421C-A5DF-9545C665CA05}.Release|Any CPU.Build.0 = Release|Any CPU
+		{320C0541-7D4E-4386-814E-7584764A189F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{320C0541-7D4E-4386-814E-7584764A189F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{320C0541-7D4E-4386-814E-7584764A189F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{320C0541-7D4E-4386-814E-7584764A189F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -71,5 +77,6 @@ Global
 		{91A42EA9-7158-4104-965A-032A4CB99179} = {F5A7E790-5E72-456E-A6CC-F55A63288932}
 		{ECCFF067-87CF-4852-9C12-FBF3BC6A4735} = {F5A7E790-5E72-456E-A6CC-F55A63288932}
 		{46FE38EE-A0E5-421C-A5DF-9545C665CA05} = {F5A7E790-5E72-456E-A6CC-F55A63288932}
+		{320C0541-7D4E-4386-814E-7584764A189F} = {8F3994E8-FD8E-47CF-B4F2-7AB8E42D4793}
 	EndGlobalSection
 EndGlobal

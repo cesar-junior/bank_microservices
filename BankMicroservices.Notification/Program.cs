@@ -3,6 +3,7 @@ using BankMicroservices.Notification.Config;
 using BankMicroservices.Notification.MessageConsumer;
 using BankMicroservices.Notification.Model.Context;
 using BankMicroservices.Notification.Repository;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -48,6 +49,7 @@ builder.Services.AddAuthentication("Bearer")
         {
             ValidateAudience = false
         };
+        options.MapInboundClaims = false;
     });
 
 builder.Services.AddAuthorization(options =>
