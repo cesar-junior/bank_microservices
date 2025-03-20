@@ -63,12 +63,12 @@ namespace BankMicroservices.Client.Controllers
 
         [HttpPatch]
         [Authorize]
-        public async Task<ActionResult<UserVO>> ModifyBalance(string userId, float quantity)
+        public async Task<ActionResult<UserVO>> TransferBalance(string senderUserId, string receiverUserId, float quantity)
         {
             var userClaimsId = User.Claims.Where(u => u.Type == "sub")?.FirstOrDefault()?.Value;
             
-            if (!User.IsInRole(Role.Admin) && userId != userClaimsId) return BadRequest();
-            var userVO = await _repository.ModifyBalance(userId, quantity);
+            if (!User.IsInRole(Role.Admin) && senderUserId != userClaimsId) return BadRequest();
+            var userVO = await _repository.TransferBalance(senderUserId, receiverUserId, quantity);
             return Ok(userVO);
         }
 

@@ -13,12 +13,12 @@ namespace BankMicroservices.Client.Repository.Caching
                 _cache = cache;
                 _options = new DistributedCacheEntryOptions
                 {
-                    AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(3600),
-                    SlidingExpiration = TimeSpan.FromSeconds(1200)
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(20),
+                    SlidingExpiration = TimeSpan.FromSeconds(5)
                 };
             }
 
-            public string GetAsync(string key)
+            public string? GetAsync(string key)
             {
                 return _cache.GetString(key);
             }

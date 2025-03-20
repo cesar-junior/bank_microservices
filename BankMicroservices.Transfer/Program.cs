@@ -1,10 +1,8 @@
 using AutoMapper;
-using BankMicroservices.Client.Config;
-using BankMicroservices.Client.Model.Context;
-using BankMicroservices.Client.RabbitMQSender;
-using BankMicroservices.Client.Repository;
-using BankMicroservices.Client.Repository.Caching;
-using BankMicroservices.Client.Repository.Caching.RedisToDoList.API.Infrastructure.Caching;
+using BankMicroservices.Transfer.Config;
+using BankMicroservices.Transfer.Model.Context;
+using BankMicroservices.Transfer.RabbitMQSender;
+using BankMicroservices.Transfer.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -13,7 +11,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-
 var connection = builder.Configuration["MySQlConnection:MySQlConnectionString"];
 
 builder.Services.AddDbContext<MySQLContext>(options => options.UseMySql(
@@ -21,28 +18,14 @@ builder.Services.AddDbContext<MySQLContext>(options => options.UseMySql(
     new MySqlServerVersion(new Version(8, 0, 41)))
 );
 
-var dbContextBuilder = new DbContextOptionsBuilder<MySQLContext>();
-dbContextBuilder.UseMySql(
-    connection,
-    new MySqlServerVersion(new Version(8, 0, 41))
-);
-
-
 IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
 builder.Services.AddSingleton(mapper);
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IUserProfilePictureRepository, UserProfilePictureRepository>();
-builder.Services.AddScoped<ICachingService, CachingService>();
+builder.Services.AddScoped<ITransferRepository, TransferRepository>();
 builder.Services.AddSingleton<IRabbitMQMessageSender, RabbitMQNotificationSender>();
 builder.Services.AddSingleton<IRabbitMQMessageSender, RabbitMQLogSender>();
 
-builder.Services.AddStackExchangeRedisCache(o =>
-{
-    o.InstanceName = "instance";
-    o.Configuration = "localhost:6379";
-});
 builder.Services.AddControllers();
 
 builder.Services.AddAuthentication("Bearer")
@@ -68,7 +51,7 @@ builder.Services.AddAuthorization(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "BankMicroservices.Client", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "BankMicroservices.Transfer", Version = "v1" });
     c.EnableAnnotations();
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
@@ -103,7 +86,7 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BankMicroservices.Client v1"));
+    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BankMicroservices.Transfer v1"));
 }
 
 app.UseHttpsRedirection();
