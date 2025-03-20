@@ -69,6 +69,20 @@ namespace BankMicroservices.Client.Repository
         {
             User user = _mapper.Map<User>(userVO);
             var u = await _context.Users.Where(u => u.UserId == user.UserId).FirstOrDefaultAsync();
+            
+            if (u == null)
+            {
+                var logMessage = new LogMessage
+                {
+                    Type = "Warning",
+                    Message = $"User {userVO.UserId} was not found. At Update User"
+                };
+
+                _rabbitMQLogSender.SendMessage(logMessage);
+                
+                throw new Exception("User not found");
+            }
+
             if (!isAdmin)
             {
                 user.AccountNumber = u.AccountNumber;
@@ -84,6 +98,17 @@ namespace BankMicroservices.Client.Repository
         {
             var u = await _context.Users.Where(u => u.UserId == userId).FirstOrDefaultAsync();
             if (u != null && quantity <= u.Balance ) return true;
+            if(u == null)
+            {
+                var logMessage = new LogMessage
+                {
+                    Type = "Warning",
+                    Message = $"User {userId} was not found. At UserHasBalance"
+                };
+
+                _rabbitMQLogSender.SendMessage(logMessage);
+            }
+
             return false;
         }
 
@@ -92,6 +117,14 @@ namespace BankMicroservices.Client.Repository
             var senderUser = await _context.Users.Where(u => u.UserId == senderUserId).FirstOrDefaultAsync();
             if (senderUser == null)
             {
+
+                var logMessage = new LogMessage
+                {
+                    Type = "Warning",
+                    Message = $"User {senderUserId} was not found. SenderUser at TransferBalance"
+                };
+
+                _rabbitMQLogSender.SendMessage(logMessage);
                 throw new Exception("Sender user not found");
             }
 
@@ -100,6 +133,14 @@ namespace BankMicroservices.Client.Repository
                 var receiverUser = await _context.Users.Where(u => u.UserId == receiverUserId).FirstOrDefaultAsync();
                 if (receiverUser == null)
                 {
+
+                    var logMessage = new LogMessage
+                    {
+                        Type = "Warning",
+                        Message = $"User {receiverUserId} was not found. ReceiverUser at TransferBalance"
+                    };
+
+                    _rabbitMQLogSender.SendMessage(logMessage);
                     throw new Exception("Receiver user not found");
                 }
 
