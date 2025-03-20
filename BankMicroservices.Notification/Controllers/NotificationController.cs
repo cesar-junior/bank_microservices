@@ -28,7 +28,7 @@ namespace BankMicroservices.Notification.Controllers
         {
             var userId = User.Claims.Where(u => u.Type == "sub")?.FirstOrDefault()?.Value;
             bool done = await _repository.SetAsRead(id, userId);
-            return done? Ok() : BadRequest();
+            return done? Ok() : NotFound();
         }
 
         [HttpGet]

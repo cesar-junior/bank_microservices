@@ -48,6 +48,7 @@ builder.Services.AddAuthentication("Bearer")
         {
             ValidateAudience = false
         };
+        options.MapInboundClaims = false;
     });
 
 builder.Services.AddAuthorization(options =>
