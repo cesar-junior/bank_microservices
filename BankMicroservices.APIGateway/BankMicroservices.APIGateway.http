@@ -1,0 +1,6 @@
+@BankMicroservices.APIGateway_HostAddress = http://localhost:5252
+
+GET {{BankMicroservices.APIGateway_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,0 +1,82 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35728.132
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FrontEnd", "FrontEnd", "{B9F04F39-B06B-4146-B566-1123192609E4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Gateway", "Gateway", "{8F3994E8-FD8E-47CF-B4F2-7AB8E42D4793}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Integration", "Integration", "{32D7AE1E-6B3A-4E22-A1B0-C037575B7CBE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{F5A7E790-5E72-456E-A6CC-F55A63288932}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankMicroservices.IdentityServer", "BankMicroservices.IdentityServer\BankMicroservices.IdentityServer.csproj", "{026A51FC-6F84-4800-ABE9-9C080E4712A4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankMicroservices.Email", "BankMicroservices.Email\BankMicroservices.Email.csproj", "{9EA3E734-7C03-43FD-9679-9726D490654E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankMicroservices.MessageBus", "BankMicroservices.MessageBus\BankMicroservices.MessageBus.csproj", "{E8474608-A328-49E3-9BC5-90FC055F3F78}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankMicroservices.Notification", "BankMicroservices.Notification\BankMicroservices.Notification.csproj", "{61EAFEF1-3E3B-42CB-A1E9-8BF9C14FC1EA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankMicroservices.Log", "BankMicroservices.Log\BankMicroservices.Log.csproj", "{91A42EA9-7158-4104-965A-032A4CB99179}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankMicroservices.Client", "BankMicroservices.Client\BankMicroservices.Client.csproj", "{ECCFF067-87CF-4852-9C12-FBF3BC6A4735}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankMicroservices.Transfer", "BankMicroservices.Transfer\BankMicroservices.Transfer.csproj", "{46FE38EE-A0E5-421C-A5DF-9545C665CA05}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankMicroservices.APIGateway", "BankMicroservices.APIGateway\BankMicroservices.APIGateway.csproj", "{320C0541-7D4E-4386-814E-7584764A189F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{026A51FC-6F84-4800-ABE9-9C080E4712A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{026A51FC-6F84-4800-ABE9-9C080E4712A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{026A51FC-6F84-4800-ABE9-9C080E4712A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{026A51FC-6F84-4800-ABE9-9C080E4712A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9EA3E734-7C03-43FD-9679-9726D490654E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9EA3E734-7C03-43FD-9679-9726D490654E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9EA3E734-7C03-43FD-9679-9726D490654E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9EA3E734-7C03-43FD-9679-9726D490654E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E8474608-A328-49E3-9BC5-90FC055F3F78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8474608-A328-49E3-9BC5-90FC055F3F78}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8474608-A328-49E3-9BC5-90FC055F3F78}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8474608-A328-49E3-9BC5-90FC055F3F78}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61EAFEF1-3E3B-42CB-A1E9-8BF9C14FC1EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61EAFEF1-3E3B-42CB-A1E9-8BF9C14FC1EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61EAFEF1-3E3B-42CB-A1E9-8BF9C14FC1EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61EAFEF1-3E3B-42CB-A1E9-8BF9C14FC1EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91A42EA9-7158-4104-965A-032A4CB99179}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91A42EA9-7158-4104-965A-032A4CB99179}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91A42EA9-7158-4104-965A-032A4CB99179}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91A42EA9-7158-4104-965A-032A4CB99179}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ECCFF067-87CF-4852-9C12-FBF3BC6A4735}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ECCFF067-87CF-4852-9C12-FBF3BC6A4735}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ECCFF067-87CF-4852-9C12-FBF3BC6A4735}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ECCFF067-87CF-4852-9C12-FBF3BC6A4735}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46FE38EE-A0E5-421C-A5DF-9545C665CA05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46FE38EE-A0E5-421C-A5DF-9545C665CA05}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46FE38EE-A0E5-421C-A5DF-9545C665CA05}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46FE38EE-A0E5-421C-A5DF-9545C665CA05}.Release|Any CPU.Build.0 = Release|Any CPU
+		{320C0541-7D4E-4386-814E-7584764A189F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{320C0541-7D4E-4386-814E-7584764A189F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{320C0541-7D4E-4386-814E-7584764A189F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{320C0541-7D4E-4386-814E-7584764A189F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{026A51FC-6F84-4800-ABE9-9C080E4712A4} = {F5A7E790-5E72-456E-A6CC-F55A63288932}
+		{9EA3E734-7C03-43FD-9679-9726D490654E} = {F5A7E790-5E72-456E-A6CC-F55A63288932}
+		{E8474608-A328-49E3-9BC5-90FC055F3F78} = {32D7AE1E-6B3A-4E22-A1B0-C037575B7CBE}
+		{61EAFEF1-3E3B-42CB-A1E9-8BF9C14FC1EA} = {F5A7E790-5E72-456E-A6CC-F55A63288932}
+		{91A42EA9-7158-4104-965A-032A4CB99179} = {F5A7E790-5E72-456E-A6CC-F55A63288932}
+		{ECCFF067-87CF-4852-9C12-FBF3BC6A4735} = {F5A7E790-5E72-456E-A6CC-F55A63288932}
+		{46FE38EE-A0E5-421C-A5DF-9545C665CA05} = {F5A7E790-5E72-456E-A6CC-F55A63288932}
+		{320C0541-7D4E-4386-814E-7584764A189F} = {8F3994E8-FD8E-47CF-B4F2-7AB8E42D4793}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,6 @@
+@BankMicroservices.Log_HostAddress = http://localhost:5299
+
+GET {{BankMicroservices.Log_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
