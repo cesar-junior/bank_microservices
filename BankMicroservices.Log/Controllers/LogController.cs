@@ -26,7 +26,7 @@ namespace BankMicroservices.Log.Controllers
             var userIsAdmin = User.Claims.Where(u => u.Type == "role" && u.Value == Role.Admin)?.FirstOrDefault() != null;
             if (!userIsAdmin) return Forbid();
 
-            pageNumber = pageNumber >= 0 ? pageNumber : 0;
+            pageNumber = pageNumber > 0 ? pageNumber : 1;
             pageSize = pageSize > 0 ? pageSize : 1;
 
             var logs = await _repository.GetWithOffsetPagination(pageNumber, pageSize);

@@ -53,7 +53,7 @@ namespace BankMicroservices.Transfer.RabbitMQSender
             {
                 WriteIndented = true,
             };
-            var json = JsonSerializer.Serialize<LogMessage>((LogMessage)message, options);
+            var json = JsonSerializer.Serialize<NotificationMessage>((NotificationMessage)message, options);
             var body = Encoding.UTF8.GetBytes(json);
             return body;
         }

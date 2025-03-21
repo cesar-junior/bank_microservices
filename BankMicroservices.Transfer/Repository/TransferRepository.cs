@@ -18,7 +18,7 @@ namespace BankMicroservices.Transfer.Repository
         private IRabbitMQMessageSender _rabbitMQMessageSender;
         private IRabbitMQMessageSender _rabbitMQLogSender;
 
-        public TransferRepository(MySQLContext context, IMapper mapper, IRabbitMQMessageSender rabbitMQMessageSender, IRabbitMQMessageSender rabbitMQLogSender)
+        public TransferRepository(MySQLContext context, IMapper mapper, [FromKeyedServices("Notification")] IRabbitMQMessageSender rabbitMQMessageSender, [FromKeyedServices("Log")] IRabbitMQMessageSender rabbitMQLogSender)
         {
             _context = context;
             _mapper = mapper;
@@ -63,23 +63,11 @@ namespace BankMicroservices.Transfer.Repository
 
                 } else
                 {
-                    transfer.Status = TransferStatus.Cancelled;
-                    _context.Transfers.Update(transfer);
-                    await _context.SaveChangesAsync();
-                    
-                    var logMessage = new LogMessage
-                    {
-                        Type = "Warning",
-                        Message = $"User {transfer.SenderUserId} does not have sufficient balance to make this transfer. TransferId: {transfer.Id}. Transfer Amount {transfer.Amount}"
-                    };
-                    _rabbitMQLogSender.SendMessage(logMessage);
-
                     notificationMessage.Title = "Your transfer was not completed.";
                     notificationMessage.Message = "You don't have enough funds to complete this transfer.";
                     _rabbitMQMessageSender.SendMessage(notificationMessage);
                     
-                    throw new Exception("User does not have sufficient balance to make this transfer.");
-
+                    throw new Exception($"User {transfer.SenderUserId} does not have sufficient balance to make this transfer. TransferId: {transfer.Id}. Transfer Amount {transfer.Amount}");
                 }
             }
             catch (HttpRequestException e) {
@@ -97,7 +85,21 @@ namespace BankMicroservices.Transfer.Repository
 
                 throw new Exception("Transfer could not be completed.");
             }
-            catch (Exception) { }
+            catch (Exception e) {
+            
+                transfer.Status = TransferStatus.Cancelled;
+                _context.Transfers.Update(transfer);
+                await _context.SaveChangesAsync();
+
+                var logMessage = new LogMessage
+                {
+                    Type = "Error",
+                    Message = $"User {transfer.SenderUserId} could not complete a transfer. TransferId: {transfer.Id}. Error message: {e.Message}"
+                };
+                _rabbitMQLogSender.SendMessage(logMessage);
+
+                throw new Exception("Transfer could not be completed.");
+            }
 
             return _mapper.Map<TransferVO>(transfer);
         }

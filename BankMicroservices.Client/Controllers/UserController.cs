@@ -47,7 +47,7 @@ namespace BankMicroservices.Client.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<UserVO>> Create([FromBody] UserVO vo)
+        public async Task<ActionResult<UserVO>> Create([FromBody] CreateUserVO vo)
         {
             if (vo == null) return BadRequest();
             var user = await _repository.Create(vo);
@@ -62,14 +62,22 @@ namespace BankMicroservices.Client.Controllers
             var userIsAdmin = User.Claims.Where(u => u.Type == "role" && u.Value == Role.Admin)?.FirstOrDefault() != null;
 
             if (!userIsAdmin && userId != userClaimsId) return BadRequest();
+            try
+            {
+                var hasBalance = await _repository.UserHasBalance(userId, quantity);
+                return Ok(hasBalance);
+            }
+            catch (Exception e)
+            {
 
-            var hasBalance = await _repository.UserHasBalance(userId, quantity);
-            return Ok(hasBalance);
+                return BadRequest(e.Message);
+            }
+            
         }
 
         [HttpPatch]
         [Authorize]
-        public async Task<ActionResult<UserVO>> TransferBalance(string senderUserId, string receiverUserId, float quantity)
+        public async Task<ActionResult<UserVO>> TransferBalance([FromForm] string senderUserId, [FromForm] string receiverUserId, [FromForm] float quantity)
         {
             var userClaimsId = User.Claims.Where(u => u.Type == "sub")?.FirstOrDefault()?.Value;
             var userIsAdmin = User.Claims.Where(u => u.Type == "role" && u.Value == Role.Admin)?.FirstOrDefault() != null;

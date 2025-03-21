@@ -19,18 +19,20 @@ namespace BankMicroservices.Client.Repository
         private IRabbitMQMessageSender _rabbitMQMessageSender;
         private IRabbitMQMessageSender _rabbitMQLogSender;
 
-        public UserRepository(DbContextOptions<MySQLContext> context, IMapper mapper, ICachingService caching, IRabbitMQMessageSender rabbitMQMessageSender, IRabbitMQMessageSender rabbitMQLogSender)
+        public UserRepository(DbContextOptions<MySQLContext> context, IMapper mapper, ICachingService caching, [FromKeyedServices("Notification")] IRabbitMQMessageSender rabbitMQMessageSender, [FromKeyedServices("Log")]IRabbitMQMessageSender rabbitMQLogSender)
         {
             _context = new MySQLContext(context);
             _caching = caching;
             _mapper = mapper;
+            _rabbitMQMessageSender = rabbitMQMessageSender;
+            _rabbitMQLogSender = rabbitMQLogSender;
         }
 
         public async Task<List<UserVO>> GetByNameOrEmail(string name, string email)
         {
             List<User> users = await _context.Users
                 .Where(a => a.FullName.ToLower().Contains(name.ToLower())
-                || a.Email.ToLower().Contains(email.ToLower())).ToListAsync();
+                && a.Email.ToLower().Contains(email.ToLower())).ToListAsync();
             return _mapper.Map<List<UserVO>>(users);
         }
 
@@ -52,14 +54,22 @@ namespace BankMicroservices.Client.Repository
             return _mapper.Map<UserVO>(user);
         }
 
-        public async Task<UserVO> Create(UserVO userVO)
+        public async Task<UserVO> Create(CreateUserVO userVO)
         {
-            User user = _mapper.Map<User>(userVO);
             var random = new Random();
-            user.AccountNumber = random.Next(100000, 1000000);
-            user.Agency = random.Next(0, 100);
-            user.Balance = random.Next(100, 1000000);
-            user.DateRegistered = DateTime.Now;
+            User user = new User
+            {
+                UserId = userVO.UserId,
+                FullName = userVO.FullName,
+                Email = userVO.Email,
+                Address = userVO.Address,
+                Gender = userVO.Gender,
+                DateRegistered = DateTime.Now,
+                AccountNumber = random.Next(100000, 1000000),
+                Agency = random.Next(0, 100),
+                Balance = random.Next(100, 1000000)
+            };
+
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
             return _mapper.Map<UserVO>(user);
@@ -69,7 +79,7 @@ namespace BankMicroservices.Client.Repository
         {
             User user = _mapper.Map<User>(userVO);
             var u = await _context.Users.Where(u => u.UserId == user.UserId).FirstOrDefaultAsync();
-            
+
             if (u == null)
             {
                 var logMessage = new LogMessage
@@ -88,6 +98,7 @@ namespace BankMicroservices.Client.Repository
                 user.AccountNumber = u.AccountNumber;
                 user.Agency = u.Agency;
             }
+            user.DateRegistered = u.DateRegistered;
 
             _context.Users.Update(user);
             await _context.SaveChangesAsync();

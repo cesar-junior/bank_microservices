@@ -23,8 +23,8 @@ builder.Services.AddSingleton(mapper);
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddScoped<ITransferRepository, TransferRepository>();
-builder.Services.AddSingleton<IRabbitMQMessageSender, RabbitMQNotificationSender>();
-builder.Services.AddSingleton<IRabbitMQMessageSender, RabbitMQLogSender>();
+builder.Services.AddKeyedSingleton<IRabbitMQMessageSender, RabbitMQNotificationSender>("Notification");
+builder.Services.AddKeyedSingleton<IRabbitMQMessageSender, RabbitMQLogSender>("Log");
 
 builder.Services.AddControllers();
 

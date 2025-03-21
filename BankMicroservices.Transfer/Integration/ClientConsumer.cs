@@ -15,7 +15,7 @@ namespace BankMicroservices.Transfer.Integration
     {
         private static HttpClient httpClient = new()
         {
-            BaseAddress = new Uri("https://localhost:7077"),
+            BaseAddress = new Uri("https://localhost:7077/"),
         };
         private readonly string token;
 
@@ -39,39 +39,47 @@ namespace BankMicroservices.Transfer.Integration
         public async Task<bool> UserHasBalance(string userId, float amount)
         {
 
-            httpClient.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue("Bearer", token);
-
+            httpClient.DefaultRequestHeaders.Remove("Authorization");
+            httpClient.DefaultRequestHeaders.Add("Authorization", token);
+            var hasBalance = false;
             await RetryPolicy.ExecuteAsync(async () =>
             {
-                using HttpResponseMessage response = await httpClient.GetAsync($"User/UserHasBalance/{userId}/{amount}");
+                using HttpResponseMessage response = await httpClient.GetAsync($"api/v1/User/UserHasBalance/{userId}/{amount}");
 
                 response.EnsureSuccessStatusCode();
 
                 var jsonResponse = await response.Content.ReadAsStringAsync();
 
-                return System.Boolean.Parse(jsonResponse);
+                hasBalance = System.Boolean.Parse(jsonResponse);
             });
 
-            return false;
+            return hasBalance;
         }
 
         public async Task TransferBalance(string senderUserId, string receiverUserId, float amount)
         {
-            httpClient.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue("Bearer", token);
-            using StringContent jsonContent = new(
-                 JsonSerializer.Serialize(new
-                 {
-                     senderUserId,
-                     receiverUserId,
-                     quantity = amount
-                 }),
-                 Encoding.UTF8,
-                 "application/json");
+            httpClient.DefaultRequestHeaders.Remove("Authorization");
+            httpClient.DefaultRequestHeaders.Add("Authorization", token);
+
+            var parameters = new Dictionary<string, string>
+                {
+                    { "senderUserId", senderUserId },
+                    { "receiverUserId", receiverUserId },
+                    { "quantity", amount.ToString() }
+                };
+
+            var content = new FormUrlEncodedContent(parameters);
+
+
+            // Create query string with parameters
+            var queryString = new StringBuilder();
+            queryString.Append("?senderUserId=").Append(Uri.EscapeDataString(senderUserId));
+            queryString.Append("&receiverUserId=").Append(Uri.EscapeDataString(receiverUserId));
+            queryString.Append("&quantity=").Append(Uri.EscapeDataString(amount.ToString()));
+
             await RetryPolicy.ExecuteAsync(async () =>
             {
-                using HttpResponseMessage response = await httpClient.PatchAsync("User/TransferBalance", jsonContent);
+                using HttpResponseMessage response = await httpClient.PatchAsync($"api/v1/User/TransferBalance/", content);
 
                 response.EnsureSuccessStatusCode();
             });

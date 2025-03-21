@@ -56,23 +56,38 @@ namespace BankMicroservices.Transfer.Controllers
         [Authorize]
         public async Task<ActionResult<TransferVO>> Create([FromBody] SendTransferVO vo)
         {
-            string? token = Request.Headers["Authorization"];
-            var userClaimId = User.Claims.Where(u => u.Type == "sub")?.FirstOrDefault()?.Value;
-            var userEmail = User.Claims.Where(u => u.Type == "email")?.FirstOrDefault()?.Value;
-            if (vo == null || vo.SenderUserId != userClaimId) return BadRequest();
-            var user = await _repository.Create(vo, token ?? "", userEmail ?? "");
-            return Ok(user);
+            try
+            {
+                string? token = Request.Headers["Authorization"];
+                var userClaimId = User.Claims.Where(u => u.Type == "sub")?.FirstOrDefault()?.Value;
+                var userEmail = User.Claims.Where(u => u.Type == "email")?.FirstOrDefault()?.Value;
+                if (vo == null || vo.SenderUserId != userClaimId) return BadRequest();
+                var user = await _repository.Create(vo, token ?? "", userEmail ?? "");
+                return Ok(user);
+            }
+            catch (Exception e)
+            {
+
+                return BadRequest(e.Message);
+            }
         }
 
         [HttpPatch]
         [Authorize]
         public async Task<ActionResult<TransferVO>> ReturnTransfer(long id)
         {
-            string? token = Request.Headers["Authorization"];
-            var userClaimId = User.Claims.Where(u => u.Type == "sub")?.FirstOrDefault()?.Value ?? "";
-            var done = await _repository.ReturnTransfer(id, userClaimId, token ?? "");
-            return Ok(done);
-        }
+            try
+            {
+                string? token = Request.Headers["Authorization"];
+                var userClaimId = User.Claims.Where(u => u.Type == "sub")?.FirstOrDefault()?.Value ?? "";
+                var done = await _repository.ReturnTransfer(id, userClaimId, token ?? "");
+                return Ok(done);
+            }
+            catch (Exception e)
+            {
 
+                return BadRequest(e.Message);
+            }
+        }
     }
 }
