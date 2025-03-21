@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankMicroservices.Transfer"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankMicroservices.APIGateway", "BankMicroservices.APIGateway\BankMicroservices.APIGateway.csproj", "{320C0541-7D4E-4386-814E-7584764A189F}"
 EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{53CC32B9-4067-4C3B-A61D-DBB2CBCC583B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -65,6 +67,10 @@ Global
 		{320C0541-7D4E-4386-814E-7584764A189F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{320C0541-7D4E-4386-814E-7584764A189F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{320C0541-7D4E-4386-814E-7584764A189F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53CC32B9-4067-4C3B-A61D-DBB2CBCC583B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53CC32B9-4067-4C3B-A61D-DBB2CBCC583B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53CC32B9-4067-4C3B-A61D-DBB2CBCC583B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53CC32B9-4067-4C3B-A61D-DBB2CBCC583B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

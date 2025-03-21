@@ -17,7 +17,7 @@ namespace BankMicroservices.Client.RabbitMQSender
 
         public RabbitMQLogSender()
         {
-            _hostName = "localhost";
+            _hostName = "rabbitmq";
             _password = "guest";
             _userName = "guest";
         }

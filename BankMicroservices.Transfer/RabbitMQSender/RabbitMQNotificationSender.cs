@@ -21,7 +21,7 @@ namespace BankMicroservices.Transfer.RabbitMQSender
 
         public RabbitMQNotificationSender()
         {
-            _hostName = "localhost";
+            _hostName = "rabbitmq";
             _password = "guest";
             _userName = "guest";
         }

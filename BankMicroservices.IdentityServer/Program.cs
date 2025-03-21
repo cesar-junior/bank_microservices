@@ -43,6 +43,9 @@ builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
+var context = app.Services.CreateScope().ServiceProvider.GetRequiredService<MySQLContext>();
+context.Database.Migrate();
+
 var initializer = app.Services.CreateScope().ServiceProvider.GetService<IDbInitializer>();
 
 // Configure the HTTP request pipeline.

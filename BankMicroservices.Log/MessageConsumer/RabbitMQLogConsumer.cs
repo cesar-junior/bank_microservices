@@ -18,7 +18,7 @@ namespace BankMicroservices.Log.MessageConsumer
             _repository = repository;
             var factory = new ConnectionFactory
             {
-                HostName = "localhost",
+                HostName = "rabbitmq",
                 UserName = "guest",
                 Password = "guest"
             };

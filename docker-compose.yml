@@ -1,0 +1,176 @@
+services:
+  bankmicroservices.apigateway:
+    image: ${DOCKER_REGISTRY-}bankmicroservicesapigateway
+    build:
+      context: .
+      dockerfile: BankMicroservices.APIGateway/Dockerfile
+    ports:
+        - "7144:7144"
+
+  bankmicroservices.client:
+    image: ${DOCKER_REGISTRY-}bankmicroservicesclient
+    build:
+      context: .
+      dockerfile: BankMicroservices.Client/Dockerfile
+    depends_on:
+        - "bankmicroservices.apigateway"
+        - "client-database"
+    networks:
+      - redis-network
+      
+  redis:
+    image: redis
+    ports:
+      - "16379:6379"
+    networks:
+      - redis-network
+
+  client-database:
+    image: mysql:8.0.41
+    container_name: client-mysqldb
+    ports:
+      - "3307:3306"
+    expose: 
+      - 3306
+    volumes:
+      - db-client-volume:/var/lib/mysql
+    restart: always
+    environment: 
+      MYSQL_ROOT_PASSWORD: admin123
+      MYSQL_DATABASE: bank_microservices_client
+
+  bankmicroservices.email:
+    image: ${DOCKER_REGISTRY-}bankmicroservicesemail
+    build:
+      context: .
+      dockerfile: BankMicroservices.Email/Dockerfile
+    depends_on:
+        - "bankmicroservices.apigateway"
+        - "email-database"
+
+  email-database:
+    image: mysql:8.0.41
+    container_name: email-mysqldb
+    ports:
+      - "3308:3306"
+    expose: 
+      - 3306
+    volumes:
+      - db-email-volume:/var/lib/mysql
+    restart: always
+    environment: 
+      MYSQL_ROOT_PASSWORD: admin123
+      MYSQL_DATABASE: bank_microservices_email
+
+  bankmicroservices.identityserver:
+    image: ${DOCKER_REGISTRY-}bankmicroservicesidentityserver
+    build:
+      context: .
+      dockerfile: BankMicroservices.IdentityServer/Dockerfile
+    depends_on:
+        - "bankmicroservices.apigateway"
+        - "identity-database"
+        
+  identity-database:
+    image: mysql:8.0.41
+    container_name: identity-mysqldb
+    ports:
+      - "3309:3306"
+    expose: 
+      - 3306
+    volumes:
+      - db-identity-volume:/var/lib/mysql
+    restart: always
+    environment: 
+      MYSQL_ROOT_PASSWORD: admin123
+      MYSQL_DATABASE: bank_microservices_identity_server
+
+  bankmicroservices.log:
+    image: ${DOCKER_REGISTRY-}bankmicroserviceslog
+    build:
+      context: .
+      dockerfile: BankMicroservices.Log/Dockerfile
+    depends_on:
+        - "bankmicroservices.apigateway"
+        - "log-database"
+        
+  log-database:
+    image: mysql:8.0.41
+    container_name: log-mysqldb
+    ports:
+      - "3310:3306"
+    expose: 
+      - 3306
+    volumes:
+      - db-log-volume:/var/lib/mysql
+    restart: always
+    environment: 
+      MYSQL_ROOT_PASSWORD: admin123
+      MYSQL_DATABASE: bank_microservices_email
+
+  bankmicroservices.notification:
+    image: ${DOCKER_REGISTRY-}bankmicroservicesnotification
+    build:
+      context: .
+      dockerfile: BankMicroservices.Notification/Dockerfile
+    depends_on:
+        - "bankmicroservices.apigateway"
+        - "notification-database"
+
+  notification-database:
+    image: mysql:8.0.41
+    container_name: notification-mysqldb
+    ports:
+      - "3311:3306"
+    expose: 
+      - 3306
+    volumes:
+      - db-notification-volume:/var/lib/mysql
+    restart: always
+    environment: 
+      MYSQL_ROOT_PASSWORD: admin123
+      MYSQL_DATABASE: bank_microservices_email
+
+  bankmicroservices.transfer:
+    image: ${DOCKER_REGISTRY-}bankmicroservicestransfer
+    build:
+      context: .
+      dockerfile: BankMicroservices.Transfer/Dockerfile
+    depends_on:
+        - "bankmicroservices.apigateway"
+        - "transfer-database"
+ 
+  transfer-database:
+    image: mysql:8.0.41
+    container_name: transfer-mysqldb
+    ports:
+      - "3312:3306"
+    expose: 
+      - 3306
+    volumes:
+      - db-transfer-volume:/var/lib/mysql
+    restart: always
+    environment: 
+      MYSQL_ROOT_PASSWORD: admin123
+      MYSQL_DATABASE: bank_microservices_email
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    command: rabbitmq-server
+    ports:
+      - "15672:15672"
+    expose:
+      - "5672"
+      - "15672"
+
+networks: 
+  redis-network:
+     driver: bridge
+
+volumes:
+   db-transfer-volume:
+   db-notification-volume:
+   db-identity-volume:
+   db-email-volume:
+   db-client-volume:
+   db-log-volume:

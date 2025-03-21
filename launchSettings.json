@@ -1,0 +1,17 @@
+{
+  "profiles": {
+    "Docker Compose": {
+      "commandName": "DockerCompose",
+      "commandVersion": "1.0",
+      "serviceActions": {
+        "bankmicroservices.apigateway": "StartDebugging",
+        "bankmicroservices.client": "StartDebugging",
+        "bankmicroservices.email": "StartDebugging",
+        "bankmicroservices.identityserver": "StartDebugging",
+        "bankmicroservices.log": "StartDebugging",
+        "bankmicroservices.notification": "StartDebugging",
+        "bankmicroservices.transfer": "StartDebugging"
+      }
+    }
+  }
+}
