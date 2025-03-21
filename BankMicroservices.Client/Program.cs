@@ -62,6 +62,7 @@ builder.Services.AddAuthorization(options =>
     {
         policy.RequireAuthenticatedUser();
         policy.RequireClaim("scope", "bank_microservices");
+        policy.RequireClaim("scope", "openid");
     });
 });
 

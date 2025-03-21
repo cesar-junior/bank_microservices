@@ -23,7 +23,8 @@ namespace BankMicroservices.Client.Controllers
         public async Task<ActionResult<UserVO>> GetByUserId(string userId)
         {
             var userClaimId = User.Claims.Where(u => u.Type == "sub")?.FirstOrDefault()?.Value;
-            if (User.IsInRole(Role.Admin) || userId == userClaimId)
+            var userIsAdmin = User.Claims.Where(u => u.Type == "role" && u.Value == Role.Admin)?.FirstOrDefault() != null;
+            if (userIsAdmin || userId == userClaimId)
             {
                 var vo = await _repository.GetByUserId(userId);
                 if (vo == null) return NotFound();
@@ -33,9 +34,12 @@ namespace BankMicroservices.Client.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = Role.Admin)]
+        [Authorize]
         public async Task<ActionResult<List<UserVO>>> GetByNameOrEmail(string name = "", string email = "")
         {
+            var userIsAdmin = User.Claims.Where(u => u.Type == "role" && u.Value == Role.Admin)?.FirstOrDefault() != null;
+            if (!userIsAdmin) return Forbid();
+
             var userClaimId = User.Claims.Where(u => u.Type == "sub")?.FirstOrDefault()?.Value;
             List<UserVO> userVOs = await _repository.GetByNameOrEmail(name, email);
             return Ok(userVOs);
@@ -55,8 +59,10 @@ namespace BankMicroservices.Client.Controllers
         public async Task<ActionResult<bool>> UserHasBalance(string userId, float quantity)
         {
             var userClaimsId = User.Claims.Where(u => u.Type == "sub")?.FirstOrDefault()?.Value;
-            
-            if (!User.IsInRole(Role.Admin) && userId != userClaimsId) return BadRequest();
+            var userIsAdmin = User.Claims.Where(u => u.Type == "role" && u.Value == Role.Admin)?.FirstOrDefault() != null;
+
+            if (!userIsAdmin && userId != userClaimsId) return BadRequest();
+
             var hasBalance = await _repository.UserHasBalance(userId, quantity);
             return Ok(hasBalance);
         }
@@ -66,8 +72,9 @@ namespace BankMicroservices.Client.Controllers
         public async Task<ActionResult<UserVO>> TransferBalance(string senderUserId, string receiverUserId, float quantity)
         {
             var userClaimsId = User.Claims.Where(u => u.Type == "sub")?.FirstOrDefault()?.Value;
-            
-            if (!User.IsInRole(Role.Admin) && senderUserId != userClaimsId) return BadRequest();
+            var userIsAdmin = User.Claims.Where(u => u.Type == "role" && u.Value == Role.Admin)?.FirstOrDefault() != null;
+
+            if (!userIsAdmin && senderUserId != userClaimsId) return BadRequest();
             var userVO = await _repository.TransferBalance(senderUserId, receiverUserId, quantity);
             return Ok(userVO);
         }
@@ -77,7 +84,7 @@ namespace BankMicroservices.Client.Controllers
         public async Task<ActionResult<UserVO>> Update([FromBody] UserVO vo)
         {
             var userId = User.Claims.Where(u => u.Type == "sub")?.FirstOrDefault()?.Value;
-            bool isAdmin = User.IsInRole(Role.Admin);
+            bool isAdmin = User.Claims.Where(u => u.Type == "role" && u.Value == Role.Admin)?.FirstOrDefault() != null;
             if (vo == null || !isAdmin && vo.UserId != userId) return BadRequest();
             var user = await _repository.Update(vo, isAdmin);
             return Ok(user);
