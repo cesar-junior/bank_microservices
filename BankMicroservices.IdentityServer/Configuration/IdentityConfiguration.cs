@@ -40,8 +40,8 @@ namespace BankMicroservices.IdentityServer.Configuration
                     ClientId = "bank_microservices",
                     ClientSecrets = { new Secret("my_super_secret".Sha256())},
                     AllowedGrantTypes = GrantTypes.ResourceOwnerPasswordAndClientCredentials,
-                    RedirectUris = {"https://localhost:4430/signin-oidc"},
-                    PostLogoutRedirectUris = {"https://localhost:4430/signout-callback-oidc"},
+                    RedirectUris = {"https://bankmicroservices.identityserver/signin-oidc"},
+                    PostLogoutRedirectUris = {"https://bankmicroservices.identityserver/signout-callback-oidc"},
                     AllowedScopes = new List<string>
                     {
                         IdentityServerConstants.StandardScopes.OpenId,

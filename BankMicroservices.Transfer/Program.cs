@@ -4,6 +4,8 @@ using BankMicroservices.Transfer.Model.Context;
 using BankMicroservices.Transfer.RabbitMQSender;
 using BankMicroservices.Transfer.Repository;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
@@ -83,9 +85,17 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 var app = builder.Build();
+try
+{
+    var context = app.Services.CreateScope().ServiceProvider.GetRequiredService<MySQLContext>();
 
-var context = app.Services.CreateScope().ServiceProvider.GetRequiredService<MySQLContext>();
-context.Database.Migrate();
+    var migrator = context.GetService<IMigrator>();
+    await migrator.MigrateAsync(null);
+}
+catch (Exception)
+{
+    Console.WriteLine("Transfer service could not run migrations on startup.");
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

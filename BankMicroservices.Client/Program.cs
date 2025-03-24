@@ -6,7 +6,8 @@ using BankMicroservices.Client.Repository;
 using BankMicroservices.Client.Repository.Caching;
 using BankMicroservices.Client.Repository.Caching.RedisToDoList.API.Infrastructure.Caching;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
@@ -102,8 +103,17 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-var context = app.Services.CreateScope().ServiceProvider.GetRequiredService<MySQLContext>();
-context.Database.Migrate();
+try
+{
+    var context = app.Services.CreateScope().ServiceProvider.GetRequiredService<MySQLContext>();
+
+    var migrator = context.GetService<IMigrator>();
+    await migrator.MigrateAsync(null);
+}
+catch (Exception)
+{
+    Console.WriteLine("Client service could not run migrations on startup.");
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

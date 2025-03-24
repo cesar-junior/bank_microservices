@@ -5,6 +5,8 @@ using BankMicroservices.Notification.Model.Context;
 using BankMicroservices.Notification.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
@@ -95,9 +97,17 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 var app = builder.Build();
+try
+{
+    var context = app.Services.CreateScope().ServiceProvider.GetRequiredService<MySQLContext>();
 
-var context = app.Services.CreateScope().ServiceProvider.GetRequiredService<MySQLContext>();
-context.Database.Migrate();
+    var migrator = context.GetService<IMigrator>();
+    await migrator.MigrateAsync(null);
+}
+catch (Exception)
+{
+    Console.WriteLine("Notification service could not run migrations on startup.");
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

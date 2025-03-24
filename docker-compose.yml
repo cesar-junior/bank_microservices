@@ -13,8 +13,10 @@ services:
       context: .
       dockerfile: BankMicroservices.Client/Dockerfile
     depends_on:
-        - "bankmicroservices.apigateway"
-        - "client-database"
+      client-database:
+        condition: service_healthy
+      bankmicroservices.apigateway:
+        condition: service_started
     networks:
       - redis-network
       
@@ -38,6 +40,12 @@ services:
     environment: 
       MYSQL_ROOT_PASSWORD: admin123
       MYSQL_DATABASE: bank_microservices_client
+    healthcheck:
+      test: ["CMD", 'mysqladmin', 'ping', '-h', '127.0.0.1', '-u', 'root', '-p$$MYSQL_ROOT_PASSWORD' ]
+      start_period: 5s
+      interval: 5s
+      timeout: 5s
+      retries: 55
 
   bankmicroservices.email:
     image: ${DOCKER_REGISTRY-}bankmicroservicesemail
@@ -45,8 +53,10 @@ services:
       context: .
       dockerfile: BankMicroservices.Email/Dockerfile
     depends_on:
-        - "bankmicroservices.apigateway"
-        - "email-database"
+      email-database:
+        condition: service_healthy
+      bankmicroservices.apigateway:
+        condition: service_started
 
   email-database:
     image: mysql:8.0.41
@@ -61,6 +71,12 @@ services:
     environment: 
       MYSQL_ROOT_PASSWORD: admin123
       MYSQL_DATABASE: bank_microservices_email
+    healthcheck:
+      test: ["CMD", 'mysqladmin', 'ping', '-h', '127.0.0.1', '-u', 'root', '-p$$MYSQL_ROOT_PASSWORD' ]
+      start_period: 5s
+      interval: 5s
+      timeout: 5s
+      retries: 55
 
   bankmicroservices.identityserver:
     image: ${DOCKER_REGISTRY-}bankmicroservicesidentityserver
@@ -68,8 +84,10 @@ services:
       context: .
       dockerfile: BankMicroservices.IdentityServer/Dockerfile
     depends_on:
-        - "bankmicroservices.apigateway"
-        - "identity-database"
+      identity-database:
+        condition: service_healthy
+      bankmicroservices.apigateway:
+        condition: service_started
         
   identity-database:
     image: mysql:8.0.41
@@ -84,6 +102,12 @@ services:
     environment: 
       MYSQL_ROOT_PASSWORD: admin123
       MYSQL_DATABASE: bank_microservices_identity_server
+    healthcheck:
+      test: ["CMD", 'mysqladmin', 'ping', '-h', '127.0.0.1', '-u', 'root', '-p$$MYSQL_ROOT_PASSWORD' ]
+      start_period: 5s
+      interval: 5s
+      timeout: 5s
+      retries: 55
 
   bankmicroservices.log:
     image: ${DOCKER_REGISTRY-}bankmicroserviceslog
@@ -91,8 +115,10 @@ services:
       context: .
       dockerfile: BankMicroservices.Log/Dockerfile
     depends_on:
-        - "bankmicroservices.apigateway"
-        - "log-database"
+      log-database:
+        condition: service_healthy
+      bankmicroservices.apigateway:
+        condition: service_started
         
   log-database:
     image: mysql:8.0.41
@@ -106,7 +132,13 @@ services:
     restart: always
     environment: 
       MYSQL_ROOT_PASSWORD: admin123
-      MYSQL_DATABASE: bank_microservices_email
+      MYSQL_DATABASE: bank_microservices_log
+    healthcheck:
+      test: ["CMD", 'mysqladmin', 'ping', '-h', '127.0.0.1', '-u', 'root', '-p$$MYSQL_ROOT_PASSWORD' ]
+      start_period: 5s
+      interval: 5s
+      timeout: 5s
+      retries: 55
 
   bankmicroservices.notification:
     image: ${DOCKER_REGISTRY-}bankmicroservicesnotification
@@ -114,8 +146,10 @@ services:
       context: .
       dockerfile: BankMicroservices.Notification/Dockerfile
     depends_on:
-        - "bankmicroservices.apigateway"
-        - "notification-database"
+      notification-database:
+        condition: service_healthy
+      bankmicroservices.apigateway:
+        condition: service_started
 
   notification-database:
     image: mysql:8.0.41
@@ -129,7 +163,13 @@ services:
     restart: always
     environment: 
       MYSQL_ROOT_PASSWORD: admin123
-      MYSQL_DATABASE: bank_microservices_email
+      MYSQL_DATABASE: bank_microservices_notification
+    healthcheck:
+      test: ["CMD", 'mysqladmin', 'ping', '-h', '127.0.0.1', '-u', 'root', '-p$$MYSQL_ROOT_PASSWORD' ]
+      start_period: 5s
+      interval: 5s
+      timeout: 5s
+      retries: 55
 
   bankmicroservices.transfer:
     image: ${DOCKER_REGISTRY-}bankmicroservicestransfer
@@ -137,8 +177,10 @@ services:
       context: .
       dockerfile: BankMicroservices.Transfer/Dockerfile
     depends_on:
-        - "bankmicroservices.apigateway"
-        - "transfer-database"
+      transfer-database:
+        condition: service_healthy
+      bankmicroservices.apigateway:
+        condition: service_started
  
   transfer-database:
     image: mysql:8.0.41
@@ -152,7 +194,13 @@ services:
     restart: always
     environment: 
       MYSQL_ROOT_PASSWORD: admin123
-      MYSQL_DATABASE: bank_microservices_email
+      MYSQL_DATABASE: bank_microservices_transfer
+    healthcheck:
+      test: ["CMD", 'mysqladmin', 'ping', '-h', '127.0.0.1', '-u', 'root', '-p$$MYSQL_ROOT_PASSWORD' ]
+      start_period: 5s
+      interval: 5s
+      timeout: 5s
+      retries: 55
 
   rabbitmq:
     image: rabbitmq:3-management

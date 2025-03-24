@@ -6,6 +6,8 @@ using BankMicroservices.IdentityServer.Model.Context;
 using BankMicroservices.IdentityServer.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,8 +45,17 @@ builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-var context = app.Services.CreateScope().ServiceProvider.GetRequiredService<MySQLContext>();
-context.Database.Migrate();
+try
+{
+    var context = app.Services.CreateScope().ServiceProvider.GetRequiredService<MySQLContext>();
+
+    var migrator = context.GetService<IMigrator>();
+    await migrator.MigrateAsync(null);
+}
+catch (Exception)
+{
+    Console.WriteLine("Identity Server service could not run migrations on startup.");
+}
 
 var initializer = app.Services.CreateScope().ServiceProvider.GetService<IDbInitializer>();
 

@@ -5,6 +5,8 @@ using BankMicroservices.Email.Model.Context;
 using BankMicroservices.Email.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
@@ -96,8 +98,17 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-var context = app.Services.CreateScope().ServiceProvider.GetRequiredService<MySQLContext>();
-context.Database.Migrate();
+try
+{
+    var context = app.Services.CreateScope().ServiceProvider.GetRequiredService<MySQLContext>();
+
+    var migrator = context.GetService<IMigrator>();
+    await migrator.MigrateAsync(null);
+}
+catch (Exception)
+{
+    Console.WriteLine("Email service could not run migrations on startup.");
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
