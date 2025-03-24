@@ -18,14 +18,14 @@ services:
       bankmicroservices.apigateway:
         condition: service_started
     networks:
-      - redis-network
+      - client-network
       
   redis:
     image: redis
     ports:
       - "16379:6379"
     networks:
-      - redis-network
+      - client-network
 
   client-database:
     image: mysql:8.0.41
@@ -46,6 +46,8 @@ services:
       interval: 5s
       timeout: 5s
       retries: 55
+    networks:
+      - client-network
 
   bankmicroservices.email:
     image: ${DOCKER_REGISTRY-}bankmicroservicesemail
@@ -212,7 +214,7 @@ services:
       - "15672"
 
 networks: 
-  redis-network:
+  client-network:
      driver: bridge
 
 volumes:
